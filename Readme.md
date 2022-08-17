@@ -24,7 +24,7 @@ make
 
 use Esc for Exit and U for Resume
 ```bash
-build/emu <filename.ch8>
+build/emu <filename.ch8> or build/emu <filename.rom>
 Example:
        build/emu ch8/random_number_test.ch8
 ```
