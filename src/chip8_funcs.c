@@ -155,7 +155,9 @@ void chip8_execute(C8 * CH8){
                     case 0x000E: // 00EE: Returns from subroutine
                         CH8->pc = CH8->stack[(--CH8->sp)&0xF] + 2;
                     break;
-                    default: printf("Wrong opcode: %X\n", CH8->opcode); getchar();
+                    default:
+                        printf("Wrong opcode: %X\n", CH8->opcode);
+                        exit(0);
 
                 }
             break;
@@ -263,7 +265,9 @@ void chip8_execute(C8 * CH8){
                         CH8->V[(CH8->opcode & 0x0F00) >> 8] = CH8->V[(CH8->opcode & 0x0F00) >> 8] << 1;
                         CH8->pc += 2;
                     break;
-                    default: printf("Wrong opcode: %X\n", CH8->opcode); getchar();
+                    default:
+                        printf("Wrong opcode: %X\n", CH8->opcode);
+                        exit(0);
 
                 }
             break;
@@ -385,10 +389,10 @@ void chip8_execute(C8 * CH8){
                         CH8->pc += 2;
                     break;
 
-                    default: printf("Wrong opcode: %X\n", CH8->opcode); getchar();
+                    default: printf("Wrong opcode: %X\n", CH8->opcode); exit(0);
                 }
             break;
-            default: printf("Wrong opcode: %X\n", CH8->opcode); getchar();
+            default: printf("Wrong opcode: %X\n", CH8->opcode); exit(0);
 
         }
         chip8_timers(CH8);
