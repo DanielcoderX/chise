@@ -16,7 +16,11 @@ apt-get install libsdl1.2-dev
 make
 ```
 ## Usage
+:bulb: **Tip:** Esc for Exit - R for Reload - P for Pause
 
+**When using P:**
+
+use Esc for Exit and U for Resume
 ```bash
 build/emu <filename.ch8>
 Example:
