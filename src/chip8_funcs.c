@@ -71,10 +71,9 @@ void chip8_initialize(C8 * CH8, char * name){
 
     CH8->game = fopen(name, "rb");
     if (!CH8->game)  {
-        printf("Wrong game name!");
+        printf("No such file or directory %s !",name);
         fflush(stdin);
-        getchar();
-        exit(1);
+        exit(0);
     }
     fread(CH8->memory+0x200, 1, memsize-0x200, CH8->game); // load game into memory
 

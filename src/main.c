@@ -11,11 +11,11 @@ int main(int argc, char *argv[])
     }
     if (strcmp(argv[1],"--help")==0){
         printf("Usage:\n");
-        printf("    emu <filename.ch8>\n");
+        printf("    build/emu <filename.ch8> or build/emu <filename.rom>\n");
         printf("    test chip8 programs are in ch8 directory\n");
         exit(0);
     }
-    if (!dot || !strcmp(dot,"ch8"))
+    if (!dot || !strcmp(dot,"ch8") || !strcmp(dot,"rom"))
     {
         printf("No such file or directory %s !",argv[1]);
         exit(0);
