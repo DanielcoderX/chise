@@ -17,6 +17,7 @@ make
 ```
 ## Usage
 :warning: **Warning:** Just .rom or .ch8 supported
+
 :bulb: **Tip:** Esc for Exit - R for Reload - P for Pause
 
 **When using P:**
