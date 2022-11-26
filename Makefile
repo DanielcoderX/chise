@@ -5,4 +5,4 @@ rm:
 
 build:
 	mkdir -p build/
-	gcc -o build/emu src/*.c -lSDL -w
+	gcc -o build/emu src/*.c -lSDL -w -O

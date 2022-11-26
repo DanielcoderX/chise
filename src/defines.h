@@ -1,6 +1,6 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
-
+#include "stdio.h"
 // General Declarations
 #define memsize 4096
 #define SCREEN_W 640
