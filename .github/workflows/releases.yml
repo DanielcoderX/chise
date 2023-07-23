@@ -41,9 +41,8 @@ jobs:
         release_name: Release ${{ steps.create_tag.outputs.tag_name }}
         body: |
           🚀 New Release is here! Check out the exciting changes:
-          ```
+
           $(git log --oneline -n 5)
-          ```
         draft: false
         prerelease: false
       env:
