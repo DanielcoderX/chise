@@ -33,6 +33,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
+    - name: Get git log
+      id: git_log
+      run: echo ::set-output name=git_log::$(git log --oneline -n 5)
+      shell: bash
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -43,16 +48,12 @@ jobs:
           :rocket: New Release is here! Check out the exciting changes:
 
           ```
-          ${{ steps.create_tag.outputs.git_log }}
+          ${{ steps.git_log.outputs.git_log }}
           ```
         draft: false
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get git log
-        run: echo ::set-output name=git_log::$(git log --oneline -n 5)
-        shell: bash
 
     - name: Upload emu binary
       uses: actions/upload-artifact@v2
