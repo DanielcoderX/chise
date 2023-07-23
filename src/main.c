@@ -1,26 +1,24 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "chip8_funcs.h"
-int main(int argc, char *argv[])
-{
-    if (argc == 1){
-        printf("At least one argument needed! use --help\n");
+
+int main(int argc, char *argv[]) {
+    if (argc == 1) {
+        printf("At least one argument needed! Use --help for usage.\n");
         exit(0);
     }
+
     char *dot = strrchr(argv[1], '.');
-    if (strcmp(argv[1],"--help")==0){
+    if (strcmp(argv[1], "--help") == 0) {
         printf("Usage:\n");
         printf("    build/emu <filename.ch8> or build/emu <filename.rom>\n");
-        printf("    test chip8 programs are in ch8 directory\n");
+        printf("    Test CHIP-8 programs are in the 'ch8' directory.\n");
         exit(0);
     }
-    if (!dot || !strcmp(dot,"ch8") || !strcmp(dot,"rom"))
-    {
-        printf("No such file or directory %s !\n",argv[1]);
+
+    if (!dot || (strcmp(dot, ".ch8") != 0 && strcmp(dot, ".rom") != 0)) {
+        printf("Invalid file format! Please use '.ch8' or '.rom' files.\n");
         exit(0);
-    }else{
-        chip8_start(argc,argv);
+    } else {
+        chip8_start(argc, argv);
         return 0;
     }
 }

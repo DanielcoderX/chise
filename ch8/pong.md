@@ -1,7 +1,11 @@
-# Pong Rom Game
+# Pong Rom Game Controls
+
 ## Left Player:
-1 For ⬆️ <br/>
-4 For ⬇️
+- 1: Move Up ⬆️
+- 4: Move Down ⬇️
+
 ## Right Player:
-C For ⬆️<br/>
-D For ⬇️
+- C: Move Up ⬆️
+- D: Move Down ⬇️
+
+Enjoy playing Pong! 🏓

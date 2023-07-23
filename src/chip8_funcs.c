@@ -1,24 +1,8 @@
-#include <SDL/SDL.h>
 #include "chip8_funcs.h"
-#include "defines.h"
 
-static int keymap[0x10] = {
-    SDLK_0,
-    SDLK_1,
-    SDLK_2,
-    SDLK_3,
-    SDLK_4,
-    SDLK_5,
-    SDLK_6,
-    SDLK_7,
-    SDLK_8,
-    SDLK_9,
-    SDLK_a,
-    SDLK_b,
-    SDLK_c,
-    SDLK_d,
-    SDLK_e,
-    SDLK_f
+int keymap[0x10] = {
+        SDLK_0, SDLK_1, SDLK_2, SDLK_3, SDLK_4, SDLK_5, SDLK_6, SDLK_7,
+        SDLK_8, SDLK_9, SDLK_a, SDLK_b, SDLK_c, SDLK_d, SDLK_e, SDLK_f
 };
 unsigned char chip8_fontset[80] =
 {
@@ -40,45 +24,41 @@ unsigned char chip8_fontset[80] =
   0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-
-void chip8_start(int argc, char *argv[]){
+void chip8_start(int argc, char *argv[]) {
     chip8_prepare(argv[1]);
 }
 
-void chip8_prepare(char * name){
+void chip8_prepare(char *name) {
     C8 CH8;
-
+    bool paused = false; // Initialize the 'paused' variable to false
     chip8_initialize(&CH8, name);
-
-    Uint8 * keys;
     SDL_Event event;
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_SetVideoMode(SCREEN_W, SCREEN_H, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
 
-
-    for(;;){
-        if(SDL_PollEvent (&event))
+    for (;;) {
+        if (SDL_PollEvent(&event))
             continue;
 
         chip8_execute(&CH8);
         chip8_draw(&CH8);
-        chip8_prec(name, &event);
+        chip8_prec(name, &event, &paused); // Pass the 'paused' variable by reference
     }
 }
-void chip8_initialize(C8 * CH8, char * name){
 
+
+void chip8_initialize(C8 *CH8, char *name) {
     int i;
-
     CH8->game = fopen(name, "rb");
-    if (!CH8->game)  {
-        printf("No such file or directory %s !",name);
+    if (!CH8->game) {
+        printf("No such file or directory %s !", name);
         fflush(stdin);
         exit(0);
     }
-    fread(CH8->memory+0x200, 1, memsize-0x200, CH8->game); // load game into memory
+    fread(CH8->memory + 0x200, 1, memsize - 0x200, CH8->game); // load game into memory
 
-    for(i = 0; i < 80; ++i)
-            CH8->memory[i] = chip8_fontset[i]; // load fontset into memory
+    for (i = 0; i < 80; ++i)
+        CH8->memory[i] = chip8_fontset[i]; // load fontset into memory
 
     memset(CH8->graphics, 0, sizeof(CH8->graphics)); // clear graphics
     memset(CH8->stack, 0, sizeof(CH8->stack)); // clear stack
@@ -88,53 +68,53 @@ void chip8_initialize(C8 * CH8, char * name){
     CH8->sp &= 0;
     CH8->opcode = 0x200;
 }
-
-void chip8_draw(C8 * CH8){
-
+void chip8_draw(C8 *CH8) {
     int i, j;
-    SDL_Surface * surface = SDL_GetVideoSurface();
+    SDL_Surface *surface = SDL_GetVideoSurface();
     SDL_LockSurface(surface);
-    Uint32 * screen = (Uint32 *)surface->pixels;
-    memset (screen,0,surface->w*surface->h*sizeof(Uint32));
+    Uint32 *screen = (Uint32 *)surface->pixels;
+    memset(screen, 0, SCREEN_W * SCREEN_H * sizeof(Uint32));
 
-    for (i = 0; i < SCREEN_H; i++)
-        for (j = 0; j < SCREEN_W; j++){
-            screen[j+i*surface->w] = CH8->graphics[(j/10)+(i/10)*64] ? 0xFFFFFFFF : 0;
+    for (i = 0; i < SCREEN_H; i++) {
+        for (j = 0; j < SCREEN_W; j++) {
+            screen[j + i * SCREEN_W] = CH8->graphics[(j / 10) + (i / 10) * 64] ? 0xFFFFFFFF : 0;
         }
+    }
 
     SDL_UnlockSurface(surface);
     SDL_Flip(surface);
     SDL_Delay(15);
 }
 
-void chip8_timers(C8 * CH8){
-    if(CH8->delay_timer > 0)
+void chip8_timers(C8 *CH8) {
+    if (CH8->delay_timer > 0)
         CH8->delay_timer--;
-    if(CH8->sound_timer > 0)
+    if (CH8->sound_timer > 0) {
         CH8->sound_timer--;
-    if(CH8->sound_timer != 0)
-        printf("%c", 7);
+        if (CH8->sound_timer == 0)
+            printf("%c", 7);
+    }
 }
 
-void chip8_prec(char * name, SDL_Event * event){
-    Uint8 * keys = SDL_GetKeyState(NULL);
-    if(keys[SDLK_ESCAPE])
+void chip8_prec(char *name, SDL_Event *event, bool *paused) {
+    Uint8 *keys = SDL_GetKeyState(NULL);
+    if (keys[SDLK_ESCAPE])
         exit(1);
-    if(keys[SDLK_r])
+    if (keys[SDLK_r])
         chip8_prepare(name);
-    if(keys[SDLK_p]){
-        while(1){
-            if(SDL_PollEvent(event)){
+    if (keys[SDLK_p]) {
+        *paused = true;
+        while (*paused) {
+            if (SDL_PollEvent(event)) {
                 keys = SDL_GetKeyState(NULL);
-                if(keys[SDLK_ESCAPE])
+                if (keys[SDLK_ESCAPE])
                     exit(1);
-                if(keys[SDLK_u])
-                    break;
+                if (keys[SDLK_u])
+                    *paused = false;
             }
         }
     }
 }
-
 void chip8_execute(C8 * CH8){
 
     Uint8 * keys;
