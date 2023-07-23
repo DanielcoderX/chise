@@ -40,19 +40,22 @@ jobs:
         tag_name: ${{ steps.create_tag.outputs.tag_name }}
         release_name: Release ${{ steps.create_tag.outputs.tag_name }}
         body: |
-          🚀 New Release is here! Check out the exciting changes:
+          :rocket: New Release is here! Check out the exciting changes:
 
           ```
-          $(git log --oneline -n 5)
+          ${{ steps.create_tag.outputs.git_log }}
           ```
         draft: false
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get git log
+        run: echo ::set-output name=git_log::$(git log --oneline -n 5)
+        shell: bash
+
     - name: Upload emu binary
       uses: actions/upload-artifact@v2
       with:
         name: emu
         path: build/emu
-
