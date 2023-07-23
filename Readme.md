@@ -17,7 +17,7 @@ pacman -S sdl_gfx sdl_mixer sdl_sound sdl_image sdl_net sdl_ttf sdl12-compat
 ### Ubuntu and Debian based
 
 ```bash
-apt-get install libsdl1.2-dev
+apt-get install build-essential libsdl1.2-dev
 ```
 
 ### Compiling
