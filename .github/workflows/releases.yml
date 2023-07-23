@@ -10,32 +10,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Install SDL dependencies
-        run: |
-          # Replace the package installation commands with the appropriate ones for your Linux distribution
-          sudo apt-get update
-          sudo apt-get install -y build-essential libsdl1.2-dev
+    - name: Install SDL dependencies
+      run: |
+        # Replace the package installation commands with the appropriate ones for your Linux distribution
+        sudo apt-get update
+        sudo apt-get install -y build-essential libsdl1.2-dev
 
-      - name: Build project
-        run: make
+    - name: Build project
+      run: make
 
-      - name: Create Git tag
-        run: git tag v$(shell git describe --tags --abbrev=0)
+    - name: Create Git tag
+      run: git tag v$(shell git describe --tags --abbrev=0)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push Git tag
-        uses: appleboy/gh-action-push-branch@v2
-        with:
-          branch: main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
+    - name: Push Git tag
+      run: git push origin v$(shell git describe --tags --abbrev=0)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build/emu
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: v$(shell git describe --tags --abbrev=0)
+        release_name: Release v$(shell git describe --tags --abbrev=0)
+        body: |
+          🚀 New Release is here! Check out the exciting changes:
+          ```
+          $(git log --oneline -n 5)
+          ```
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload emu binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: emu
+        path: build/emu
